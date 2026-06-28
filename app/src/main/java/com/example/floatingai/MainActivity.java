@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
         Button btnStart = findViewById(R.id.btnStartService);
 
         SharedPreferences prefs = getSharedPreferences("AiPrefs", MODE_PRIVATE);
-        editApiKey.setText(prefs.getString("api_key", ""));
-        editApiUrl.setText(prefs.getString("api_url", "https://api.openai.com/v1/chat/completions"));
-        editModel.setText(prefs.getString("model", "gpt-3.5-turbo"));
+        // Replace these two lines in MainActivity.java:
+        editApiUrl.setText(prefs.getString("api_url", "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"));
+        editModel.setText(prefs.getString("model", "gemini-1.5-flash"));
 
         btnStart.setOnClickListener(v -> {
             if (!Settings.canDrawOverlays(this)) {
