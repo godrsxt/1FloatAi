@@ -23,33 +23,68 @@ public class AiClient {
     }
 
     public void sendMessage(String apiKey, String apiUrl, String modelName, String message, AiCallback callback) {
-        // Defaults to OpenAI format, but works with Groq, DeepSeek, Together etc.
-        if (apiUrl == null || apiUrl.isEmpty()) apiUrl = "https://api.openai.com/v1/chat/completions";
-        if (modelName == null || modelName.isEmpty()) modelName = "gpt-3.5-turbo";
+        if (apiUrl == null || apiUrl.isEmpty()) apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+        if (modelName == null || modelName.isEmpty()) modelName = "gemini-1.5-flash";
+
+        boolean isGemini = apiUrl.contains("generativelanguage.googleapis.com");
 
         try {
             JSONObject jsonBody = new JSONObject();
-            jsonBody.put("model", modelName);
+            Request request;
 
-            JSONArray messagesArray = new JSONArray();
-            JSONObject messageObj = new JSONObject();
-            messageObj.put("role", "user");
-            messageObj.put("content", message);
-            messagesArray.put(messageObj);
+            if (isGemini) {
+                // Construct Gemini URL with the API key in the query string
+                String finalUrl = "https://generativelanguage.googleapis.com/v1beta/models/" + modelName + ":generateContent?key=" + apiKey;
 
-            jsonBody.put("messages", messagesArray);
+                // Build Gemini JSON format
+                JSONObject textPart = new JSONObject();
+                textPart.put("text", message);
+                
+                JSONArray partsArray = new JSONArray();
+                partsArray.put(textPart);
+                
+                JSONObject contentObj = new JSONObject();
+                contentObj.put("parts", partsArray);
+                
+                JSONArray contentsArray = new JSONArray();
+                contentsArray.put(contentObj);
+                
+                jsonBody.put("contents", contentsArray);
 
-            RequestBody body = RequestBody.create(
-                    jsonBody.toString(),
-                    MediaType.parse("application/json; charset=utf-8")
-            );
+                RequestBody body = RequestBody.create(
+                        jsonBody.toString(),
+                        MediaType.parse("application/json; charset=utf-8")
+                );
 
-            Request request = new Request.Builder()
-                    .url(apiUrl)
-                    .addHeader("Authorization", "Bearer " + apiKey)
-                    .addHeader("Content-Type", "application/json")
-                    .post(body)
-                    .build();
+                request = new Request.Builder()
+                        .url(finalUrl)
+                        .addHeader("Content-Type", "application/json")
+                        .post(body)
+                        .build();
+            } else {
+                // Build OpenAI JSON format
+                jsonBody.put("model", modelName);
+
+                JSONArray messagesArray = new JSONArray();
+                JSONObject messageObj = new JSONObject();
+                messageObj.put("role", "user");
+                messageObj.put("content", message);
+                messagesArray.put(messageObj);
+
+                jsonBody.put("messages", messagesArray);
+
+                RequestBody body = RequestBody.create(
+                        jsonBody.toString(),
+                        MediaType.parse("application/json; charset=utf-8")
+                );
+
+                request = new Request.Builder()
+                        .url(apiUrl)
+                        .addHeader("Authorization", "Bearer " + apiKey)
+                        .addHeader("Content-Type", "application/json")
+                        .post(body)
+                        .build();
+            }
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
@@ -66,10 +101,23 @@ public class AiClient {
                     try {
                         String responseData = response.body().string();
                         JSONObject json = new JSONObject(responseData);
-                        String reply = json.getJSONArray("choices")
-                                .getJSONObject(0)
-                                .getJSONObject("message")
-                                .getString("content");
+                        String reply;
+
+                        if (isGemini) {
+                            // Parse Gemini response
+                            reply = json.getJSONArray("candidates")
+                                    .getJSONObject(0)
+                                    .getJSONObject("content")
+                                    .getJSONArray("parts")
+                                    .getJSONObject(0)
+                                    .getString("text");
+                        } else {
+                            // Parse OpenAI response
+                            reply = json.getJSONArray("choices")
+                                    .getJSONObject(0)
+                                    .getJSONObject("message")
+                                    .getString("content");
+                        }
                         callback.onSuccess(reply.trim());
                     } catch (Exception e) {
                         callback.onError("Parsing Error: " + e.getMessage());
