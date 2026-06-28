@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    android:elevation="8dp">
+
+    <!-- Header / Drag Handle -->
+    <LinearLayout
+        android:id="@+id/dragHandle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#333333"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="  :: Drag to Move ::"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnSize"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="↕"
+            android:background="?android:attr/selectableItemBackground"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="X"
+            android:background="?android:attr/selectableItemBackground"
+            android:textColor="#FF5555"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerChat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:padding="4dp">
+
+        <EditText
+            android:id="@+id/editMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Ask AI..."
+            android:background="@null"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send" />
+    </LinearLayout>
+</LinearLayout>

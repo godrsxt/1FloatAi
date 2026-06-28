@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Floating AI Settings"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"/>
+
+    <EditText
+        android:id="@+id/editApiKey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="API Key (Required)"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/editApiUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="API URL (e.g. https://api.openai.com/v1/chat/completions)"
+        android:layout_marginTop="12dp"/>
+
+    <EditText
+        android:id="@+id/editModel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Model (e.g. gpt-3.5-turbo)"
+        android:layout_marginTop="12dp"/>
+
+    <Button
+        android:id="@+id/btnStartService"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Floating AI"
+        android:layout_marginTop="32dp"/>
+</LinearLayout>
