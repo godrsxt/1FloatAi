@@ -153,9 +153,20 @@ class FloatingService : Service() {
         val prefs = getSharedPreferences("AiPrefs", Context.MODE_PRIVATE)
         val apiKey = prefs.getString("API_KEY", "") ?: ""
 
+        // Updated JSON Payload for NVIDIA Nemotron
         val jsonObj = JSONObject().apply {
-            put("model", "google/gemma-4-31b-it:free")
+            put("model", "nvidia/nemotron-3-ultra-550b-a55b")
+            put("temperature", 1.0)
+            put("top_p", 0.95)
+            put("max_tokens", 16384)
+            put("reasoning_budget", 16384)
             put("stream", true)
+            
+            val chatTemplateKwargs = JSONObject().apply {
+                put("enable_thinking", true)
+            }
+            put("chat_template_kwargs", chatTemplateKwargs)
+
             val messages = JSONArray().put(JSONObject().apply {
                 put("role", "user")
                 put("content", query)
@@ -164,9 +175,12 @@ class FloatingService : Service() {
         }
 
         val requestBody = jsonObj.toString().toRequestBody("application/json".toMediaType())
+        
+        // Updated API URL and added Accept header for NVIDIA API
         val request = Request.Builder()
-            .url("https://openrouter.ai/api/v1/chat/completions")
+            .url("https://integrate.api.nvidia.com/v1/chat/completions")
             .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Accept", "application/json")
             .post(requestBody)
             .build()
 
@@ -200,7 +214,7 @@ class FloatingService : Service() {
                     while (reader.readLine().also { line = it } != null) {
                         if (line!!.startsWith("data: ")) {
                             val data = line!!.substring(6)
-                            if (data == "[DONE]") break
+                            if (data.trim() == "[DONE]") break
                             try {
                                 val json = JSONObject(data)
                                 val delta = json.getJSONArray("choices").getJSONObject(0).getJSONObject("delta")
