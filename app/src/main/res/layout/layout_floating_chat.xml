@@ -7,21 +7,42 @@
     android:elevation="12dp"
     android:padding="4dp">
 
-    <!-- Header / Drag Area -->
+    <!-- Header / Drag Area with New Buttons -->
     <LinearLayout
         android:id="@+id/dragHeader"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="12dp">
+        android:paddingHorizontal="8dp">
+        
+        <Button
+            android:id="@+id/btnHistory"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@android:color/transparent"
+            android:text="☰"
+            android:textColor="#FFFFFF" />
+            
         <TextView
+            android:id="@+id/tvHeaderTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="AI Chat (Tap to release keyboard)"
+            android:gravity="center"
+            android:text="AI (Tap to drop focus)"
             android:textSize="12sp"
             android:textColor="#B3FFFFFF" />
+            
+        <Button
+            android:id="@+id/btnNewChat"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@android:color/transparent"
+            android:text="+"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF" />
+            
         <Button
             android:id="@+id/btnClose"
             android:layout_width="30dp"
@@ -32,50 +53,77 @@
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <!-- Main Chat UI (Visible by Default) -->
+    <RelativeLayout
+        android:id="@+id/chatUIArea"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/inputLayout"
-        android:layout_below="@id/dragHeader"
-        android:padding="12dp">
-        <TextView
-            android:id="@+id/tvChat"
+        android:layout_above="@id/resizeHandle"
+        android:layout_below="@id/dragHeader">
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/inputLayout"
+            android:padding="12dp">
+            <!-- textIsSelectable allows copying text! -->
+            <TextView
+                android:id="@+id/tvChat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:lineSpacingExtra="4dp"
+                android:textIsSelectable="true"
+                android:text="New Chat Ready!\n" />
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/inputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:lineSpacingExtra="4dp"
-            android:text="Ready!\n" />
-    </ScrollView>
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <EditText
+                android:id="@+id/etInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Ask something..."
+                android:textColorHint="#80FFFFFF"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/input_bg"
+                android:padding="12dp"
+                android:textSize="14sp"/>
+            <Button
+                android:id="@+id/btnSend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:backgroundTint="#4CAF50"
+                android:textColor="#FFFFFF"
+                android:text="Send" />
+        </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/inputLayout"
+    <!-- History UI (Hidden by Default) -->
+    <ScrollView
+        android:id="@+id/historyUIArea"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@id/resizeHandle"
-        android:orientation="horizontal"
-        android:padding="8dp">
-        <EditText
-            android:id="@+id/etInput"
-            android:layout_width="0dp"
+        android:layout_below="@id/dragHeader"
+        android:visibility="gone"
+        android:background="#E6121212"
+        android:padding="12dp">
+        <LinearLayout
+            android:id="@+id/historyContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Ask something..."
-            android:textColorHint="#80FFFFFF"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/input_bg"
-            android:padding="12dp"
-            android:textSize="14sp"/>
-        <Button
-            android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:backgroundTint="#4CAF50"
-            android:textColor="#FFFFFF"
-            android:text="Send" />
-    </LinearLayout>
+            android:orientation="vertical" />
+    </ScrollView>
 
     <View
         android:id="@+id/resizeHandle"
